@@ -4,8 +4,9 @@
     "description": "A package for detecting Chinese",
     "main": "src/index.ts",
     "type": "commonjs",
-    "author": "Dirain1700",
-    "license": "MIT",
+    "dependencies": {
+        "lodash": "^4.17.21"
+    },
     "devDependencies": {
         "@types/glob": "^8.1.0",
         "@types/lodash": "^4.14.195",
@@ -13,12 +14,12 @@
         "@types/node": "^20.3.1",
         "@typescript-eslint/eslint-plugin": "^5.60.0",
         "@typescript-eslint/parser": "^5.60.0",
-        "esbuild": "^0.18.6",
+        "esbuild": "^0.18.8",
         "esbuild-plugin-alias-path": "^2.0.2",
         "eslint": "^8.43.0",
         "eslint-import-resolver-typescript": "^3.5.5",
         "eslint-plugin-import": "^2.27.5",
-        "glob": "^10.2.7",
+        "glob": "^10.3.0",
         "mocha": "^10.2.0",
         "prettier": "^2.8.8",
         "ts-node": "^10.9.1",
@@ -28,7 +29,7 @@
         "lint": "eslint --cache .",
         "lint-fix": "eslint --cache --fix .",
         "test": "npm run esbuild && npm run mocha",
-        "mocha": "mocha --enable-source-maps dist/cjs/test/index.js",
+        "mocha": "npm run esbuild && mocha --enable-source-maps dist/cjs/test/index.js",
         "write": "prettier --write .",
         "check": "prettier --check .",
         "tsc": "npm run tsc:cjs && npm run tsc:esm",
@@ -47,7 +48,6 @@
         "prepublishOnly": "npm run check && npm run pre-build && npm run build",
         "ncu": "npx -p npm-check-updates  -c \"ncu -u\""
     },
-    "dependencies": {
-        "lodash": "^4.17.21"
-    }
+    "author": "Dirain1700",
+    "license": "MIT"
 }

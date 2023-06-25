@@ -13,12 +13,12 @@ export class detectChineseStatic {
      * End of auto-generated lines
      */
 
-    static readonly hiraganaUnicode: string = "\u3040-\u309F";
-    static readonly katakanaUnicode: string = "\u30A0-\u30FF";
+    static readonly hiraganaUnicode: string = "[\u3040-\u309F]";
+    static readonly katakanaUnicode: string = "[\u30A0-\u30FF]";
 
     static readonly chineseRegExp: RegExp = new RegExp(this.chineseUnicode, "gimu");
     static readonly japaneseRegExp: RegExp = new RegExp(
-        this.japaneseUnicode + this.hiraganaUnicode + this.katakanaUnicode,
+        this.japaneseUnicode + "|" + this.hiraganaUnicode + "|" + this.katakanaUnicode,
         "gimu"
     );
 
@@ -59,7 +59,7 @@ export class detectChineseStatic {
         result.japaneseStrings = jaMatch;
         if (jaMatch.length) {
             for (const str of jaMatch) {
-                text.replace(str, "");
+                text = text.replace(str, "");
             }
         }
         const zhMatch = this.getChineseCharacters(text);
@@ -67,11 +67,11 @@ export class detectChineseStatic {
         if (zhMatch.length) {
             result.lang = "ZH";
             for (const str of zhMatch) {
-                text.replace(str, "");
+                text = text.replace(str, "");
             }
         }
         result.otherStrings = text.split("");
-        result.lang = !jaMatch.length ? "ZH" : !zhMatch.length ? "" : "JA";
+        result.lang = jaMatch.length ? "JA" : zhMatch.length ? "ZH" : "";
 
         return result;
     }
@@ -88,12 +88,12 @@ export class detectChinese {
      * End of auto-generated lines
      */
 
-    readonly hiraganaUnicode: string = "\u3040-\u309F";
-    readonly katakanaUnicode: string = "\u30A0-\u30FF";
+    readonly hiraganaUnicode: string = "[\u3040-\u309F]";
+    readonly katakanaUnicode: string = "[\u30A0-\u30FF]";
 
     readonly chineseRegExp: RegExp = new RegExp(this.chineseUnicode, "gimu");
     readonly japaneseRegExp: RegExp = new RegExp(
-        this.japaneseUnicode + this.hiraganaUnicode + this.katakanaUnicode,
+        this.japaneseUnicode + "|" + this.hiraganaUnicode + "|" + this.katakanaUnicode,
         "gimu"
     );
 
@@ -118,7 +118,7 @@ export class detectChinese {
         result.japaneseStrings = jaMatch;
         if (jaMatch.length) {
             for (const str of jaMatch) {
-                text.replace(str, "");
+                text = text.replace(str, "");
             }
         }
         const zhMatch = text.match(this.chineseUnicode) ?? [];
@@ -126,11 +126,11 @@ export class detectChinese {
         if (zhMatch.length) {
             result.lang = "ZH";
             for (const str of zhMatch) {
-                text.replace(str, "");
+                text = text.replace(str, "");
             }
         }
         result.otherStrings = text.split("");
-        result.lang = !jaMatch.length ? "ZH" : !zhMatch.length ? "" : "JA";
+        result.lang = jaMatch.length ? "JA" : zhMatch.length ? "ZH" : "";
 
         this.hasChineseCharacters = !!result.chineseStrings.length;
         this.hasJapaneseCharacters = !!result.japaneseStrings.length;
