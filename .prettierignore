@@ -1,0 +1,9 @@
+.cache/*
+dist/*
+foo.*
+src/detect.ts
+src/index.ts
+build.*
+!build.ts
+tsc.*
+!tsc.ts

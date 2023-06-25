@@ -1,0 +1,153 @@
+{
+    "env": {
+        "node": true,
+        "commonjs": true,
+        "es2022": true
+    },
+    "extends": ["eslint:recommended"],
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "rules": {
+        "no-unused-vars": "error",
+        "semi": ["error", "always"],
+        "comma-spacing": "error",
+        "no-extra-semi": "error",
+        "quotes": ["off", "double", { "avoidEscape": true }],
+        "no-var": "off",
+        "no-trailing-spaces": "error"
+    },
+    "overrides": [
+        {
+            "files": ["*/**/*.ts"],
+            "extends": [
+                "eslint:recommended",
+                "plugin:@typescript-eslint/recommended",
+                "plugin:@typescript-eslint/recommended-requiring-type-checking"
+            ],
+            "parser": "@typescript-eslint/parser",
+            "parserOptions": {
+                "project": ["./tsconfig.cjs.json"]
+            },
+            "plugins": ["@typescript-eslint", "import"],
+            "rules": {
+                "no-unused-vars": "off",
+                "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+                "@typescript-eslint/consistent-type-imports": "error",
+                "@typescript-eslint/prefer-ts-expect-error": "error",
+                "@typescript-eslint/no-inferrable-types": "off",
+                "@typescript-eslint/no-this-alias": "off",
+                "@typescript-eslint/no-non-null-assertion": "off",
+                "@typescript-eslint/no-unused-vars": "error",
+                "@typescript-eslint/restrict-plus-operands": "off",
+                "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
+                "import/order": [
+                    "error",
+                    {
+                        "groups": ["builtin", "external", "internal", "object", ["parent", "sibling"], "index", "type"],
+                        "pathGroups": [
+                            {
+                                "pattern": "[!/]",
+                                "group": "type",
+                                "position": "before"
+                            },
+                            {
+                                "pattern": "../src/*",
+                                "group": "type",
+                                "position": "before"
+                            },
+                            {
+                                "pattern": "../types/*",
+                                "group": "type",
+                                "position": "after"
+                            }
+                        ],
+                        "distinctGroup": false,
+                        "alphabetize": {
+                            "order": "asc"
+                        },
+                        "newlines-between": "always-and-inside-groups"
+                    }
+                ]
+            }
+        },
+        {
+            "files": ["setup/**/*.ts"],
+            "parserOptions": {
+                "project": ["./tsconfig.setup.json"]
+            }
+        },
+        {
+            "files": ["build.ts", "tsc.ts"],
+            "extends": [
+                "eslint:recommended",
+                "plugin:@typescript-eslint/recommended",
+                "plugin:@typescript-eslint/recommended-requiring-type-checking"
+            ],
+            "parser": "@typescript-eslint/parser",
+            "parserOptions": {
+                "project": ["./tsconfig.build.json"]
+            },
+            "plugins": ["@typescript-eslint", "import"],
+            "rules": {
+                "no-unused-vars": "off",
+                "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+                "@typescript-eslint/consistent-type-imports": "error",
+                "@typescript-eslint/prefer-ts-expect-error": "error",
+                "@typescript-eslint/no-explicit-any": "off",
+                "@typescript-eslint/no-inferrable-types": "off",
+                "@typescript-eslint/no-this-alias": "off",
+                "@typescript-eslint/no-non-null-assertion": "off",
+                "@typescript-eslint/no-unused-vars": "error",
+                "@typescript-eslint/restrict-plus-operands": "off",
+                "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
+                "import/order": [
+                    "error",
+                    {
+                        "groups": ["builtin", "external", "internal", "object", ["parent", "sibling"], "index", "type"],
+                        "pathGroups": [
+                            {
+                                "pattern": "[!/]",
+                                "group": "type",
+                                "position": "before"
+                            },
+                            {
+                                "pattern": "../src/*",
+                                "group": "type",
+                                "position": "before"
+                            },
+                            {
+                                "pattern": "../types/*",
+                                "group": "type",
+                                "position": "after"
+                            }
+                        ],
+                        "distinctGroup": false,
+                        "alphabetize": {
+                            "order": "asc"
+                        },
+                        "newlines-between": "always-and-inside-groups"
+                    }
+                ]
+            }
+        },
+        {
+            "files": ["test/**/*.ts"],
+            "parserOptions": {
+                "project": ["./tsconfig.test.json"]
+            },
+            "settings": {
+                "import/resolver": {
+                    "typescript": {
+                        "alwaysTryTypes": true,
+                        "project": "./tsconfig.test.json"
+                    },
+                    "alias": {
+                        "map": [["@dist", "./dist/src/index"]],
+                        "extentions": ["*.ts", "*.js"]
+                    }
+                }
+            }
+        }
+    ]
+}

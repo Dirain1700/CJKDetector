@@ -1,0 +1,20 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        // module settings
+        "module": "commonjs",
+
+        // emit settings
+        "target": "esnext",
+        "sourceMap": true,
+        "rootDir": "./",
+        "declaration": false,
+        "declarationMap": false,
+        "esModuleInterop": true,
+        "noEmitOnError": true,
+        "forceConsistentCasingInFileNames": true,
+        "incremental": false,
+        "typeRoots": ["node_modules/@types", "types"]
+    },
+    "include": ["build.ts", "tsc.ts"]
+}
