@@ -22,5 +22,6 @@
         "noPropertyAccessFromIndexSignature": false,
         "typeRoots": ["node_modules/@types", "types"]
     },
-    "include": ["src/**/*.ts", "types/**/*.ts"]
+    "include": ["src/**/*.ts", "types/**/*.ts"],
+    "exclude": ["src/type/*"]
 }

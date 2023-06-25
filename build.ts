@@ -16,7 +16,7 @@ const mainSourceFileName = path.resolve(__dirname, "src/detect-source.ts");
 const mainFileName = path.resolve(__dirname, "src/detect.ts");
 const exportSourceFileName = path.resolve(__dirname, "src/index-source.ts");
 const exportFileName = path.resolve(__dirname, "src/index.ts");
-const testFiles = globSync(["src/test/**/*.ts"]);
+const testFiles = globSync(["src/test/**/*.ts"]).map((e) => path.resolve(__dirname, e));
 const ReadBasePath = path.resolve(__dirname, "types");
 const WriteBasePath = path.resolve(__dirname, "dist/types");
 
@@ -84,7 +84,7 @@ if (dataFiles.length === 2) {
     // @ts-expect-error format should be assignable
     // prettier-ignore
     buildSync(Object.assign(cloneDeep(config), {
-        entryPoints: [mainFileName, exportFileName, ...testFiles],
+        entryPoints: [mainFileName, exportFileName],
         format: "cjs",
         outdir: path.resolve(__dirname, "./dist/cjs"),
         tsconfig: path.resolve(__dirname, "tsconfig.cjs.json"),
@@ -95,12 +95,14 @@ if (dataFiles.length === 2) {
     // @ts-expect-error format should be assignable
     // prettier-ignore
     buildSync(Object.assign(cloneDeep(config), {
-        entryPoints: [mainFileName, exportFileName, ...testFiles],
+        entryPoints: [mainFileName, exportFileName],
         format: "esm",
         outExtension: { ".js": ".mjs" },
         outdir: path.resolve(__dirname, "./dist/esm"),
         tsconfig: path.resolve(__dirname, "tsconfig.esm.json"),
     }));
+
+    console.log("copying type definition modules...");
 
     const regex = /"\.\.\/src\//g;
     const ReadBasePath = "./types";
@@ -114,23 +116,16 @@ if (dataFiles.length === 2) {
         const Changes = fs.readFileSync(ReadFilePath, "utf-8").replaceAll(regex, '"../../src/').trim();
         fs.writeFileSync(WriteFilePath, Changes);
     }
-}
-/*
-console.log("Transpiling test modules...");
 
-// @ts-expect-error format should be assignable
-// prettier-ignore
-build(Object.assign(cloneDeep(config), {
-    bundle: false,
-    entryPoints: targetTestFiles,
-    format: "cjs",
-    minify: false,
-    outdir: "dist/test",
-    tsconfig: path.resolve(__dirname, "tsconfig.test.json"),
-    plugins: [
-        aliasPath({
-            alias: { "@dist/*": path.resolve(__dirname, "./dist") },
-        }),
-    ],
-})).then(() => console.log("Sucessfully built files!"));
-*/
+    console.log("Transpiling test modules...");
+    // @ts-expect-error format should be assignable
+    // prettier-ignore
+    buildSync(Object.assign(cloneDeep(config), {
+        bundle: true,
+        entryPoints: testFiles,
+        format: "cjs",
+        minify: true,
+        outdir: "dist/cjs/test",
+        tsconfig: path.resolve(__dirname, "tsconfig.test.json"),
+    }));
+}
