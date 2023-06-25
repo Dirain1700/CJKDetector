@@ -19,7 +19,7 @@ const HASH = "#";
 
 execSync("mkdir -p " + dataDirectory);
 execSync("wget " + UnihanURL + " -O " + UnihanZipFileIndex);
-execSync("unzip -u Unihan.zip -d unihan", { cwd: dataDirectory });
+execSync("unzip -u Unihan.zip -d Unihan", { cwd: dataDirectory });
 
 const UnihanReadings = fs.readFileSync(UnihanReadingsIndex, "utf-8");
 
@@ -93,7 +93,7 @@ function buildCode([latestBuiltCode, previousBuiltCode, previousCode]: [string, 
         ? latestBuiltCode + toCodeString(previousBuiltCode)
         : latestBuiltCode +
               toCodeString(previousBuiltCode) +
-              (previousBuiltCode - previousCode === 1 ? "" : "-") +
+              (previousCode - previousBuiltCode === 1 ? "" : "-") +
               toCodeString(previousCode);
 }
 
@@ -101,7 +101,7 @@ function generateRegExpSource(arr: number[]): string {
     const sum = arr.reduce(
         (previousBuiltCode: [string, number, number], currentCode: number): [string, number, number] => {
             if (previousBuiltCode[1] < 0) return [previousBuiltCode[0], currentCode, currentCode];
-            if (previousBuiltCode[2] - previousBuiltCode[1] === 1)
+            if (currentCode - previousBuiltCode[2] === 1)
                 return [previousBuiltCode[0], previousBuiltCode[1], currentCode];
 
             return [buildCode(previousBuiltCode), currentCode, currentCode];
