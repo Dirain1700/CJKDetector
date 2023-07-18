@@ -54,6 +54,8 @@ build.*
 !build.ts
 *.js
 *.js.map
+data/result/*
+!data/result/README.md
 
 # Dependency directories
 node_modules/
