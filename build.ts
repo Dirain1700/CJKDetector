@@ -3,8 +3,8 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-import { aliasPath } from "esbuild-plugin-alias-path";
 import { build, buildSync } from "esbuild";
+import { aliasPath } from "esbuild-plugin-alias-path";
 import { globSync } from "glob";
 import { cloneDeep } from "lodash";
 
