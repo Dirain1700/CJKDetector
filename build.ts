@@ -10,7 +10,9 @@ import { cloneDeep } from "lodash";
 
 const utilityFiles = ["build.ts", "tsc.ts"].map((e) => path.resolve(__dirname, e));
 const setupFiles = globSync(["setup/**/*.ts"]).map((e) => path.resolve(__dirname, e));
-const targetFiles = globSync(["src/**/*.ts"]).map((e) => path.resolve(__dirname, e));
+const targetFiles = globSync(["src/**/*.ts"])
+    .filter((e) => !e.endsWith("-source.ts"))
+    .map((e) => path.resolve(__dirname, e));
 const dataFiles = globSync(["data/result/*.txt"]).map((e) => path.resolve(__dirname, e));
 const mainSourceFileName = path.resolve(__dirname, "src/detect-source.ts");
 const mainFileName = path.resolve(__dirname, "src/detect.ts");
@@ -110,11 +112,14 @@ if (dataFiles.length === 2) {
 
     if (!fs.existsSync(WriteBasePath)) fs.mkdirSync(WriteBasePath, { recursive: true });
 
+    const generatedFiles: string[] = [];
+
     for (const FileName of fs.readdirSync(ReadBasePath)) {
         const ReadFilePath = ReadBasePath + "/" + FileName;
         const WriteFilePath = WriteBasePath + "/" + FileName;
         const Changes = fs.readFileSync(ReadFilePath, "utf-8").replaceAll(regex, '"../../src/').trim();
         fs.writeFileSync(WriteFilePath, Changes);
+        generatedFiles.push(WriteFilePath);
     }
 
     console.log("Transpiling test modules...");
@@ -128,4 +133,6 @@ if (dataFiles.length === 2) {
         outdir: "dist/cjs/test",
         tsconfig: path.resolve(__dirname, "tsconfig.test.json"),
     }));
+
+    generatedFiles.forEach((f) => fs.unlinkSync(f));
 }

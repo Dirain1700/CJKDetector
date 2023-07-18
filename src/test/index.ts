@@ -81,7 +81,7 @@ describe.only("DetectChineseStatic", function () {
         assert.strictEqual(detectChineseStatic.getJapaneseCharacters("谢谢"), []);
     });
     it("should detect language correctly", function () {
-        assert.strictEqual(detectChineseStatic.detect("不知道"), {
+        assert.strictEqual(detectChineseStatic.match("不知道"), {
             lang: "JA",
             text: "不知道",
             chineseStrings: [],
