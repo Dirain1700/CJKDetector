@@ -7,16 +7,16 @@ import { detectChineseStatic, detectChinese } from "../index";
 import type { LangDetectionResult } from "../index";
 
 console.log();
-console.log("\x1b[1mCurrently unit test should not be ran cause of their bugs.");
+//console.log("\x1b[1mCurrently unit test should not be ran cause of their bugs.");
 process.stdout.write("\x1b[0m");
-process.exit();
+//process.exit();
 
 describe.only("DetectChineseStatic", function () {
     it("should detect Chinese strings", function () {
         assert.ok(detectChineseStatic.hasChineseCharacters("不知道"));
         assert.ok(detectChineseStatic.hasChineseCharacters("こんにちは。你好"));
         // This line is broken on mocha test, but works correctly out of the test
-        // assert.ok(detectChineseStatic.hasChineseCharacters("再见"));
+        assert.ok(detectChineseStatic.hasChineseCharacters("再见"));
         assert.ok(!detectChineseStatic.hasChineseCharacters("hello"));
         assert.ok(!detectChineseStatic.hasChineseCharacters("おはよう"));
         assert.ok(detectChineseStatic.hasChineseCharacters("吉"));
@@ -40,7 +40,7 @@ describe.only("DetectChineseStatic", function () {
         assert.ok(!detectChineseStatic.isChineseSentence("hello"));
         assert.ok(!detectChineseStatic.isChineseSentence("おはよう"));
         assert.ok(detectChineseStatic.isChineseSentence("吉"));
-        // assert.ok(detectChineseStatic.isChineseSentence("芳香環"));
+        assert.ok(detectChineseStatic.isChineseSentence("芳香環"));
         assert.ok(detectChineseStatic.isChineseSentence("谢谢"));
     });
     it("should judge is this Japanese sentence correctly", function () {
@@ -50,7 +50,7 @@ describe.only("DetectChineseStatic", function () {
         assert.ok(!detectChineseStatic.isJapaneseSentence("hello"));
         assert.ok(!detectChineseStatic.isJapaneseSentence("おはよう"));
         assert.ok(detectChineseStatic.isJapaneseSentence("吉"));
-        // assert.ok(detectChineseStatic.isJapaneseSentence("芳香環"));
+        assert.ok(detectChineseStatic.isJapaneseSentence("芳香環"));
         assert.ok(detectChineseStatic.isJapaneseSentence("谢谢"));
     });
     it("should return array of Chinese strings correctly", function () {
@@ -60,7 +60,7 @@ describe.only("DetectChineseStatic", function () {
         assert.strictEqual(!detectChineseStatic.getChineseCharacters("hello"), []);
         assert.strictEqual(!detectChineseStatic.getChineseCharacters("おはよう"), []);
         assert.strictEqual(detectChineseStatic.getChineseCharacters("吉"), ["吉"]);
-        // assert.strictEqual(detectChineseStatic.getChineseCharacters("芳香環"), ["芳", "香", "環"]);
+        assert.strictEqual(detectChineseStatic.getChineseCharacters("芳香環"), ["芳", "香", "環"]);
         assert.strictEqual(detectChineseStatic.getChineseCharacters("谢谢"), ["谢", "谢"]);
     });
     it("should return array of Japanese strings correctly", function () {
@@ -123,7 +123,6 @@ describe.only("DetectChineseStatic", function () {
             japaneseStrings: ["吉"],
             otherStrings: [],
         });
-        /*
         assert.strictEqual(detectChineseStatic.match("芳香環"), {
             lang: "JA",
             text: "芳香環",
@@ -131,7 +130,6 @@ describe.only("DetectChineseStatic", function () {
             japaneseStrings: ["芳", "香", "環"],
             otherStrings: [],
         });
-        */
         assert.strictEqual(detectChineseStatic.match("谢谢"), {
             lang: "ZH",
             text: "谢谢",

@@ -72,8 +72,8 @@ if (dataFiles.length === 2) {
 
     const mainFileSource = fs
         .readFileSync(mainSourceFileName, "utf-8")
-        .replaceAll("CHINESE_REGXEP", zhUnicodes)
-        .replaceAll("JAPANESE_REGEXP", jaUnicodes);
+        .replaceAll("{ZH_REGEXP}", zhUnicodes)
+        .replaceAll("{JA_REGEXP}", jaUnicodes);
 
     fs.writeFileSync(mainFileName, mainFileSource);
 
