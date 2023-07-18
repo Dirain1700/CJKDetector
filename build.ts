@@ -112,14 +112,11 @@ if (dataFiles.length === 2) {
 
     if (!fs.existsSync(WriteBasePath)) fs.mkdirSync(WriteBasePath, { recursive: true });
 
-    const generatedFiles: string[] = [];
-
     for (const FileName of fs.readdirSync(ReadBasePath)) {
         const ReadFilePath = ReadBasePath + "/" + FileName;
         const WriteFilePath = WriteBasePath + "/" + FileName;
         const Changes = fs.readFileSync(ReadFilePath, "utf-8").replaceAll(regex, '"../../src/').trim();
         fs.writeFileSync(WriteFilePath, Changes);
-        generatedFiles.push(WriteFilePath);
     }
 
     console.log("Transpiling test modules...");
@@ -134,5 +131,6 @@ if (dataFiles.length === 2) {
         tsconfig: path.resolve(__dirname, "tsconfig.test.json"),
     }));
 
-    generatedFiles.forEach((f) => fs.unlinkSync(f));
+    fs.unlinkSync(mainFileName);
+    fs.unlinkSync(exportFileName);
 }
