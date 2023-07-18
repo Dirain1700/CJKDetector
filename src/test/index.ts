@@ -11,7 +11,7 @@ console.log();
 process.stdout.write("\x1b[0m");
 //process.exit();
 
-describe.only("DetectChineseStatic", function () {
+describe("DetectChineseStatic", function () {
     it("should detect Chinese strings", function () {
         assert.ok(detectChineseStatic.hasChineseCharacters("不知道"));
         assert.ok(detectChineseStatic.hasChineseCharacters("こんにちは。你好"));
