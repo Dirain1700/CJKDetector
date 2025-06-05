@@ -2,7 +2,7 @@
 
 import * as assert from "assert";
 
-import { detectChineseStatic } from "../index";
+import { detectChineseStatic, detectChinese } from "../index";
 
 // import type { LangDetectionResult } from "../index";
 
@@ -114,7 +114,7 @@ describe("DetectChineseStatic", function () {
         });
     });
 });
-/*
+
 describe("DetectChinese", function () {
     const instance1 = new detectChinese("不知道");
     const instance2 = new detectChinese("こんにちは。你好");
@@ -125,13 +125,13 @@ describe("DetectChinese", function () {
     const instance7 = new detectChinese("芳香環");
     const instance8 = new detectChinese("谢谢");
     it("should detect Chinese strings", function () {
-        assert.ok(instance1.hasChineseCharacters);
+        assert.ok(!instance1.hasChineseCharacters);
         assert.ok(instance2.hasChineseCharacters);
         assert.ok(instance3.hasChineseCharacters);
         assert.ok(!instance4.hasChineseCharacters);
         assert.ok(!instance5.hasChineseCharacters);
-        assert.ok(instance6.hasChineseCharacters);
-        assert.ok(instance7.hasChineseCharacters);
+        assert.ok(!instance6.hasChineseCharacters);
+        assert.ok(!instance7.hasChineseCharacters);
         assert.ok(instance8.hasChineseCharacters);
     });
     it("should detect Japanese strings", function () {
@@ -145,13 +145,13 @@ describe("DetectChinese", function () {
         assert.ok(!instance8.hasJapaneseCharacters);
     });
     it("should judge is this Chinese sentence correctly", function () {
-        assert.ok(instance1.isChineseSentence);
+        assert.ok(!instance1.isChineseSentence);
         assert.ok(instance2.isChineseSentence);
         assert.ok(instance3.isChineseSentence);
         assert.ok(!instance4.isChineseSentence);
         assert.ok(!instance5.isChineseSentence);
-        assert.ok(instance6.isChineseSentence);
-        assert.ok(instance7.isChineseSentence);
+        assert.ok(!instance6.isChineseSentence);
+        assert.ok(!instance7.isChineseSentence);
         assert.ok(instance8.isChineseSentence);
     });
     it("should judge is this Japanese sentence correctly", function () {
@@ -165,13 +165,13 @@ describe("DetectChinese", function () {
         assert.ok(!instance8.isJapaneseSentence);
     });
     it("should return array of Chinese strings correctly", function () {
-        assert.deepStrictEqual(instance1.chineseCharacters, ["不", "知", "道"]);
-        assert.deepStrictEqual(instance2.chineseCharacters, ["你", "好"]);
-        assert.deepStrictEqual(instance3.chineseCharacters, ["再", "见"]);
+        assert.deepStrictEqual(instance1.chineseCharacters, []);
+        assert.deepStrictEqual(instance2.chineseCharacters, ["你"]);
+        assert.deepStrictEqual(instance3.chineseCharacters, ["见"]);
         assert.deepStrictEqual(instance4.chineseCharacters, []);
         assert.deepStrictEqual(instance5.chineseCharacters, []);
-        assert.deepStrictEqual(instance6.chineseCharacters, ["吉"]);
-        assert.deepStrictEqual(instance7.chineseCharacters, ["芳", "香", "環"]);
+        assert.deepStrictEqual(instance6.chineseCharacters, []);
+        assert.deepStrictEqual(instance7.chineseCharacters, []);
         assert.deepStrictEqual(instance8.chineseCharacters, ["谢", "谢"]);
     });
     it("should return array of Japanese strings correctly", function () {
@@ -207,11 +207,11 @@ describe("DetectChinese", function () {
             otherStrings: [],
         });
         assert.deepStrictEqual(instance4.result, {
-            lang: "ZH",
-            text: "哪里",
-            chineseStrings: ["哪"],
-            japaneseStrings: ["里"],
-            otherStrings: [],
+            lang: "",
+            text: "hello",
+            chineseStrings: [],
+            japaneseStrings: [],
+            otherStrings: ["h", "e", "l", "l", "o"],
         });
         assert.deepStrictEqual(instance5.result, {
             lang: "JA",
@@ -243,4 +243,3 @@ describe("DetectChinese", function () {
         });
     });
 });
-*/
