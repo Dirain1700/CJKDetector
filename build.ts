@@ -3,24 +3,17 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-import { build, buildSync } from "esbuild";
-import { aliasPath } from "esbuild-plugin-alias-path";
+import { buildSync } from "esbuild";
 import { globSync } from "glob";
 import { cloneDeep } from "lodash";
 
-const utilityFiles = ["build.ts", "tsc.ts"].map((e) => path.resolve(__dirname, e));
+const utilityFiles = ["build.ts"].map((e) => path.resolve(__dirname, e));
 const setupFiles = globSync(["setup/**/*.ts"]).map((e) => path.resolve(__dirname, e));
-const targetFiles = globSync(["src/**/*.ts"])
-    .filter((e) => !e.endsWith("-source.ts"))
-    .map((e) => path.resolve(__dirname, e));
+const targetFiles = globSync(["src/*.ts"]).map((e) => path.resolve(__dirname, e));
 const dataFiles = globSync(["data/result/*.txt"]).map((e) => path.resolve(__dirname, e));
-const mainSourceFileName = path.resolve(__dirname, "src/detect-source.ts");
 const mainFileName = path.resolve(__dirname, "src/detect.ts");
-const exportSourceFileName = path.resolve(__dirname, "src/index-source.ts");
 const exportFileName = path.resolve(__dirname, "src/index.ts");
-const testFiles = globSync(["src/test/**/*.ts"]).map((e) => path.resolve(__dirname, e));
-const ReadBasePath = path.resolve(__dirname, "types");
-const WriteBasePath = path.resolve(__dirname, "dist/types");
+const testFiles = globSync(["src/test/*.ts"]).map((e) => path.resolve(__dirname, e));
 
 const config = {
     allowOverwrite: true,
@@ -55,32 +48,6 @@ buildSync(Object.assign(cloneDeep(config), {
 }));
 
 if (dataFiles.length === 2) {
-    console.log("Generating files from extracted RegExp...");
-
-    let jaUnicodes: string = "";
-    let zhUnicodes: string = "";
-
-    for (const dataFileName of dataFiles) {
-        const dataFile = fs.readFileSync(dataFileName, "utf-8").trim().split("\n")[0]!;
-
-        if (dataFileName.endsWith("chinese.txt")) zhUnicodes = dataFile;
-        else if (dataFileName.endsWith("japanese.txt")) jaUnicodes = dataFile;
-        else throw new Error("Unknown unicodes detected");
-    }
-
-    if (!zhUnicodes || !jaUnicodes) throw new Error("Empty Unicodes detected");
-
-    const mainFileSource = fs
-        .readFileSync(mainSourceFileName, "utf-8")
-        .replaceAll("{ZH_REGEXP}", zhUnicodes)
-        .replaceAll("{JA_REGEXP}", jaUnicodes);
-
-    fs.writeFileSync(mainFileName, mainFileSource);
-
-    const exportFileSource = fs.readFileSync(exportSourceFileName, "utf-8").replaceAll("-source", "");
-
-    fs.writeFileSync(exportFileName, exportFileSource);
-
     console.log("Transpiling to CommonJS...");
 
     // @ts-expect-error format should be assignable
@@ -126,11 +93,8 @@ if (dataFiles.length === 2) {
         bundle: true,
         entryPoints: testFiles,
         format: "cjs",
-        minify: true,
+        minify: false,
         outdir: "dist/cjs/test",
         tsconfig: path.resolve(__dirname, "tsconfig.test.json"),
     }));
-
-    fs.unlinkSync(mainFileName);
-    fs.unlinkSync(exportFileName);
 }

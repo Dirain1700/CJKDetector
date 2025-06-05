@@ -1,43 +1,43 @@
 "use strict";
 
+import * as fs from "node:fs";
+
 import type { LangDetectionResult } from "../types/detect";
 
-/**
- * Start of auto-generated lines
- * Do not touch strings that surrounded by {}
- */
-const zhUnicodes = "[{ZH_REGEXP}]";
-const jaUnicodes = "[{JA_REGEXP}\u3040-\u309F\u30A0-\u30FF]";
-/**
- * End of auto-generated lines
- */
-
-const zhRegExp = new RegExp(zhUnicodes, "imu");
-const jaRegExp = new RegExp(jaUnicodes, "imu");
-
 export class detectChineseStatic {
+    static zhRegExp = new RegExp("[]");
+    static jaRegExp = new RegExp("[]");
+
+    static init(): void {
+        const zhRegExpTexts = fs.readFileSync("./data/result/chinese.txt", "utf-8").trim();
+        const jaRegExpTexts = fs.readFileSync("./data/result/japanese.txt", "utf-8").trim();
+
+        detectChineseStatic.zhRegExp = new RegExp(`[${zhRegExpTexts}]`, "imu");
+        detectChineseStatic.jaRegExp = new RegExp(`[${jaRegExpTexts}\u3040-\u309F\u30A0-\u30FF]`, "imu");
+    }
+
     static hasChineseCharacters(text: string): boolean {
-        return zhRegExp.test(text);
+        return detectChineseStatic.zhRegExp.test(text);
     }
 
     static hasJapaneseCharacters(text: string): boolean {
-        return jaRegExp.test(text);
+        return detectChineseStatic.jaRegExp.test(text);
     }
 
     static isChineseSentence(text: string): boolean {
-        return this.match(text).lang === "ZH";
+        return detectChineseStatic.match(text).lang === "ZH";
     }
 
     static isJapaneseSentence(text: string): boolean {
-        return this.match(text).lang === "JA";
+        return detectChineseStatic.match(text).lang === "JA";
     }
 
-    static getChineseCharacters(text: string): string[] {
-        return text.split("").filter((e) => zhRegExp.test(e));
+    static #getChineseCharacters(text: string): string[] {
+        return text.split("").filter((e) => detectChineseStatic.zhRegExp.test(e));
     }
 
-    static getJapaneseCharacters(text: string): string[] {
-        return text.split("").filter((e) => jaRegExp.test(e));
+    static #getJapaneseCharacters(text: string): string[] {
+        return text.split("").filter((e) => detectChineseStatic.jaRegExp.test(e));
     }
 
     static match(text: string): LangDetectionResult {
@@ -49,14 +49,14 @@ export class detectChineseStatic {
             otherStrings: [],
         };
 
-        const jaMatch = this.getJapaneseCharacters(text);
+        const jaMatch = detectChineseStatic.#getJapaneseCharacters(text);
         result.japaneseStrings = jaMatch;
         if (jaMatch.length) {
             for (const str of jaMatch) {
                 text = text.replace(str, "");
             }
         }
-        const zhMatch = this.getChineseCharacters(text);
+        const zhMatch = detectChineseStatic.#getChineseCharacters(text);
         result.chineseStrings = zhMatch;
         if (zhMatch.length) {
             for (const str of zhMatch) {
@@ -64,7 +64,7 @@ export class detectChineseStatic {
             }
         }
         result.otherStrings = text.split("");
-        result.lang = zhMatch.length ? "ZH" : jaMatch.length ? "JA" : "";
+        result.lang = jaMatch.length > zhMatch.length ? "JA" : zhMatch.length ? "ZH" : "";
 
         return result;
     }
@@ -79,7 +79,11 @@ export class detectChinese {
     japaneseCharacters: string[];
     result: LangDetectionResult;
 
-    constructor(text: string) {
+    constructor(text: string, init?: boolean) {
+        if (init) {
+            detectChineseStatic.init();
+        }
+
         const result: LangDetectionResult = {
             lang: "JA",
             text,
@@ -88,14 +92,14 @@ export class detectChinese {
             otherStrings: [],
         };
 
-        const jaMatch = text.split("").filter((e) => jaRegExp.test(e));
+        const jaMatch = text.split("").filter((e) => detectChineseStatic.jaRegExp.test(e));
         result.japaneseStrings = jaMatch;
         if (jaMatch.length) {
             for (const str of jaMatch) {
                 text = text.replace(str, "");
             }
         }
-        const zhMatch = text.split("").filter((e) => zhRegExp.test(e));
+        const zhMatch = text.split("").filter((e) => detectChineseStatic.zhRegExp.test(e));
         result.chineseStrings = zhMatch;
         if (zhMatch.length) {
             result.lang = "ZH";

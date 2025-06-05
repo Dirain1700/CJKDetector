@@ -2,10 +2,6 @@
 foo.*
 foo/*
 
-# Auto generated files
-src/detect.ts
-src/index.ts
-
 # Logs
 logs
 *.log

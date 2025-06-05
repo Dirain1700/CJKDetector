@@ -19,7 +19,9 @@ const SPACE = "\t";
 const HASH = "#";
 
 execSync("mkdir -p " + dataDirectory);
-execSync("wget " + UnihanURL + " -O " + UnihanZipFileIndex);
+if (process.argv.map((e) => e.toLowerCase()).includes("-f") || !fs.existsSync(UnihanZipFileIndex)) {
+    execSync("wget " + UnihanURL + " -O " + UnihanZipFileIndex);
+}
 execSync("unzip -o Unihan.zip -d " + UnihanUnzipDirectory, { cwd: dataDirectory });
 
 const UnihanReadings = fs.readFileSync(UnihanReadingsIndex, "utf-8");
