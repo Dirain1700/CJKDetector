@@ -1,29 +1,41 @@
 {
-    "name": "cn-detector",
+    "name": "@dirain/cjkdetector",
     "version": "0.0.1",
-    "description": "A package for detecting Chinese",
-    "main": "src/index.ts",
+    "description": "A package for detecting Chinese and Japanese characters",
+    "main": "./dist/cjs/index.js",
+    "exports": {
+        "import": "./dist/esm/index.js",
+        "require": "./dist/cjs/index.js"
+    },
+    "types": "./src/index.ts",
+    "module": "./dist/esm/index.js",
+    "files": [
+        "dist",
+        "src"
+    ],
     "type": "commonjs",
-    "dependencies": {
-        "lodash": "^4.17.21"
+    "bin": {
+        "init": "dist/setup/init.js",
+        "download": "dist/setup/download.js",
+        "setup": "dist/setup/setup.js"
     },
     "devDependencies": {
-        "@types/glob": "^8.1.0",
-        "@types/lodash": "^4.17.17",
+        "@types/lodash": "^4.17.20",
         "@types/mocha": "^10.0.10",
-        "@types/node": "^22.15.29",
-        "@typescript-eslint/eslint-plugin": "8.33.1",
-        "@typescript-eslint/parser": "8.33.1",
-        "esbuild": "0.25.5",
+        "@types/node": "^24.3.0",
+        "@typescript-eslint/eslint-plugin": "8.41.0",
+        "@typescript-eslint/parser": "8.41.0",
+        "esbuild": "0.25.9",
         "esbuild-plugin-alias-path": "2.0.2",
         "eslint": "8.57.0",
-        "eslint-import-resolver-typescript": "4.4.2",
-        "eslint-plugin-import": "2.31.0",
-        "glob": "11.0.2",
-        "mocha": "^11.5.0",
-        "prettier": "3.5.3",
+        "eslint-import-resolver-typescript": "4.4.4",
+        "eslint-plugin-import": "2.32.0",
+        "glob": "11.0.3",
+        "lodash": "^4.17.21",
+        "mocha": "^11.7.1",
+        "prettier": "3.6.2",
         "ts-node": "10.9.2",
-        "typescript": "5.8.3"
+        "typescript": "5.9.2"
     },
     "scripts": {
         "lint": "eslint --cache .",
@@ -37,11 +49,11 @@
         "tsc:esm": "tsc --p tsconfig.esm.json --noEmit",
         "tsc:setup": "tsc -p tsconfig.setup.json",
         "tsc:test": "tsc -p tsconfig.test.json",
-        "emitDeclaration": "npm run emit:cjs & npm run emit:esm",
+        "emit": "npm run emit:cjs & npm run emit:esm",
         "emit:cjs": "tsc -p tsconfig.cjs.json",
         "emit:esm": "tsc -p tsconfig.esm.json",
         "ci": "npm run check && npm run lint && npm run tsc",
-        "build": "npm run write && npm run esbuild && npm run emitDeclaration && npm run lint",
+        "build": "npm run write && npm run esbuild && npm run emit && npm run lint",
         "pre-build": "tsc -p tsconfig.build.json",
         "setup": "node --enable-source-maps dist/setup/setup.js",
         "esbuild": "node --enable-source-maps build.js",
@@ -49,5 +61,9 @@
         "ncu": "npx -p npm-check-updates  -c \"ncu -u\""
     },
     "author": "Dirain1700",
-    "license": "MIT"
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Dirain1700/cjkdetector.git"
+    }
 }

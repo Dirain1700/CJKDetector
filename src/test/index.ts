@@ -2,110 +2,106 @@
 
 import * as assert from "assert";
 
-import { detectChineseStatic, detectChinese } from "../index";
-
-// import type { LangDetectionResult } from "../index";
+import { CJKDetectorStatic, CJKDetector } from "../index";
 
 console.log();
-//console.log("\x1b[1mCurrently unit test should not be ran cause of their bugs.");
 process.stdout.write("\x1b[0m");
-//process.exit();
 
-detectChineseStatic.init();
+CJKDetectorStatic.init();
 
 describe("DetectChineseStatic", function () {
     it("should detect Chinese strings", function () {
-        assert.ok(detectChineseStatic.hasChineseCharacters("不知道"));
-        assert.ok(detectChineseStatic.hasChineseCharacters("こんにちは。你好"));
+        assert.ok(CJKDetectorStatic.hasChineseCharacters("不知道"));
+        assert.ok(CJKDetectorStatic.hasChineseCharacters("こんにちは。你好"));
         // This line is broken on mocha test, but works correctly out of the test
-        assert.ok(detectChineseStatic.hasChineseCharacters("再见"));
-        assert.ok(!detectChineseStatic.hasChineseCharacters("hello"));
-        assert.ok(!detectChineseStatic.hasChineseCharacters("おはよう"));
-        assert.ok(detectChineseStatic.hasChineseCharacters("吉"));
-        assert.ok(detectChineseStatic.hasChineseCharacters("芳香環"));
-        assert.ok(detectChineseStatic.hasChineseCharacters("谢谢"));
+        assert.ok(CJKDetectorStatic.hasChineseCharacters("再见"));
+        assert.ok(!CJKDetectorStatic.hasChineseCharacters("hello"));
+        assert.ok(!CJKDetectorStatic.hasChineseCharacters("おはよう"));
+        assert.ok(CJKDetectorStatic.hasChineseCharacters("吉"));
+        assert.ok(CJKDetectorStatic.hasChineseCharacters("芳香環"));
+        assert.ok(CJKDetectorStatic.hasChineseCharacters("谢谢"));
     });
     it("should detect Japanese strings", function () {
-        assert.ok(detectChineseStatic.hasJapaneseCharacters("不知道"));
-        assert.ok(detectChineseStatic.hasJapaneseCharacters("こんにちは。你好"));
-        assert.ok(detectChineseStatic.hasJapaneseCharacters("再见"));
-        assert.ok(!detectChineseStatic.hasJapaneseCharacters("hello"));
-        assert.ok(detectChineseStatic.hasJapaneseCharacters("おはよう"));
-        assert.ok(detectChineseStatic.hasJapaneseCharacters("吉"));
-        assert.ok(detectChineseStatic.hasJapaneseCharacters("芳香環"));
-        assert.ok(!detectChineseStatic.hasJapaneseCharacters("谢谢"));
+        assert.ok(CJKDetectorStatic.hasJapaneseCharacters("不知道"));
+        assert.ok(CJKDetectorStatic.hasJapaneseCharacters("こんにちは。你好"));
+        assert.ok(CJKDetectorStatic.hasJapaneseCharacters("再见"));
+        assert.ok(!CJKDetectorStatic.hasJapaneseCharacters("hello"));
+        assert.ok(CJKDetectorStatic.hasJapaneseCharacters("おはよう"));
+        assert.ok(CJKDetectorStatic.hasJapaneseCharacters("吉"));
+        assert.ok(CJKDetectorStatic.hasJapaneseCharacters("芳香環"));
+        assert.ok(!CJKDetectorStatic.hasJapaneseCharacters("谢谢"));
     });
     it("should judge is this Chinese sentence correctly", function () {
-        assert.ok(!detectChineseStatic.isChineseSentence("不知道"));
-        assert.ok(!detectChineseStatic.isChineseSentence("こんにちは。你好"));
-        assert.ok(detectChineseStatic.isChineseSentence("再见"));
-        assert.ok(!detectChineseStatic.isChineseSentence("hello"));
-        assert.ok(!detectChineseStatic.isChineseSentence("おはよう"));
-        assert.ok(!detectChineseStatic.isChineseSentence("吉"));
-        assert.ok(!detectChineseStatic.isChineseSentence("芳香環"));
-        assert.ok(detectChineseStatic.isChineseSentence("谢谢"));
+        assert.ok(!CJKDetectorStatic.isChineseSentence("不知道"));
+        assert.ok(!CJKDetectorStatic.isChineseSentence("こんにちは。你好"));
+        assert.ok(CJKDetectorStatic.isChineseSentence("再见"));
+        assert.ok(!CJKDetectorStatic.isChineseSentence("hello"));
+        assert.ok(!CJKDetectorStatic.isChineseSentence("おはよう"));
+        assert.ok(!CJKDetectorStatic.isChineseSentence("吉"));
+        assert.ok(!CJKDetectorStatic.isChineseSentence("芳香環"));
+        assert.ok(CJKDetectorStatic.isChineseSentence("谢谢"));
     });
     it("should judge is this Japanese sentence correctly", function () {
-        assert.ok(detectChineseStatic.isJapaneseSentence("不知道"));
-        assert.ok(detectChineseStatic.isJapaneseSentence("こんにちは。你好"));
-        assert.ok(!detectChineseStatic.isJapaneseSentence("再见"));
-        assert.ok(!detectChineseStatic.isJapaneseSentence("hello"));
-        assert.ok(detectChineseStatic.isJapaneseSentence("おはよう"));
-        assert.ok(detectChineseStatic.isJapaneseSentence("吉"));
-        assert.ok(detectChineseStatic.isJapaneseSentence("芳香環"));
-        assert.ok(!detectChineseStatic.isJapaneseSentence("谢谢"));
+        assert.ok(CJKDetectorStatic.isJapaneseSentence("不知道"));
+        assert.ok(CJKDetectorStatic.isJapaneseSentence("こんにちは。你好"));
+        assert.ok(!CJKDetectorStatic.isJapaneseSentence("再见"));
+        assert.ok(!CJKDetectorStatic.isJapaneseSentence("hello"));
+        assert.ok(CJKDetectorStatic.isJapaneseSentence("おはよう"));
+        assert.ok(CJKDetectorStatic.isJapaneseSentence("吉"));
+        assert.ok(CJKDetectorStatic.isJapaneseSentence("芳香環"));
+        assert.ok(!CJKDetectorStatic.isJapaneseSentence("谢谢"));
     });
     it("should detect language correctly", function () {
-        assert.deepStrictEqual(detectChineseStatic.match("不知道"), {
+        assert.deepStrictEqual(CJKDetectorStatic.match("不知道"), {
             lang: "JA",
             text: "不知道",
             japaneseStrings: ["不", "知", "道"],
             chineseStrings: [],
             otherStrings: [],
         });
-        assert.deepStrictEqual(detectChineseStatic.match("こんにちは。你好"), {
+        assert.deepStrictEqual(CJKDetectorStatic.match("こんにちは。你好"), {
             lang: "JA",
             text: "こんにちは。你好",
             chineseStrings: ["你"],
             japaneseStrings: ["こ", "ん", "に", "ち", "は", "好"],
             otherStrings: ["。"],
         });
-        assert.deepStrictEqual(detectChineseStatic.match("再见"), {
+        assert.deepStrictEqual(CJKDetectorStatic.match("再见"), {
             lang: "ZH",
             text: "再见",
             chineseStrings: ["见"],
             japaneseStrings: ["再"],
             otherStrings: [],
         });
-        assert.deepStrictEqual(detectChineseStatic.match("哪里"), {
+        assert.deepStrictEqual(CJKDetectorStatic.match("哪里"), {
             lang: "ZH",
             text: "哪里",
             chineseStrings: ["哪"],
             japaneseStrings: ["里"],
             otherStrings: [],
         });
-        assert.deepStrictEqual(detectChineseStatic.match("おはよう"), {
+        assert.deepStrictEqual(CJKDetectorStatic.match("おはよう"), {
             lang: "JA",
             text: "おはよう",
             chineseStrings: [],
             japaneseStrings: ["お", "は", "よ", "う"],
             otherStrings: [],
         });
-        assert.deepStrictEqual(detectChineseStatic.match("吉"), {
+        assert.deepStrictEqual(CJKDetectorStatic.match("吉"), {
             lang: "JA",
             text: "吉",
             chineseStrings: [],
             japaneseStrings: ["吉"],
             otherStrings: [],
         });
-        assert.deepStrictEqual(detectChineseStatic.match("芳香環"), {
+        assert.deepStrictEqual(CJKDetectorStatic.match("芳香環"), {
             lang: "JA",
             text: "芳香環",
             chineseStrings: [],
             japaneseStrings: ["芳", "香", "環"],
             otherStrings: [],
         });
-        assert.deepStrictEqual(detectChineseStatic.match("谢谢"), {
+        assert.deepStrictEqual(CJKDetectorStatic.match("谢谢"), {
             lang: "ZH",
             text: "谢谢",
             chineseStrings: ["谢", "谢"],
@@ -116,14 +112,14 @@ describe("DetectChineseStatic", function () {
 });
 
 describe("DetectChinese", function () {
-    const instance1 = new detectChinese("不知道");
-    const instance2 = new detectChinese("こんにちは。你好");
-    const instance3 = new detectChinese("再见");
-    const instance4 = new detectChinese("hello");
-    const instance5 = new detectChinese("おはよう");
-    const instance6 = new detectChinese("吉");
-    const instance7 = new detectChinese("芳香環");
-    const instance8 = new detectChinese("谢谢");
+    const instance1 = new CJKDetector("不知道");
+    const instance2 = new CJKDetector("こんにちは。你好");
+    const instance3 = new CJKDetector("再见");
+    const instance4 = new CJKDetector("hello");
+    const instance5 = new CJKDetector("おはよう");
+    const instance6 = new CJKDetector("吉");
+    const instance7 = new CJKDetector("芳香環");
+    const instance8 = new CJKDetector("谢谢");
     it("should detect Chinese strings", function () {
         assert.ok(!instance1.hasChineseCharacters);
         assert.ok(instance2.hasChineseCharacters);

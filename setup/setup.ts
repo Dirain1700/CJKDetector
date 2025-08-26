@@ -3,28 +3,40 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import * as config from "./config";
+import { DATA_DIR, RAW_DIR, DISTRIBUTED_CODES_DIR } from "./constants";
 import { execSync } from "./tools";
 
-const UnihanURL = "http://www.unicode.org/Public/UNIDATA/Unihan.zip";
-const dataDirectory = path.resolve(__dirname, "../../data");
-const UnihanZipFileIndex = path.join(dataDirectory, "Unihan.zip");
-const UnihanUnzipDirectory = path.join(dataDirectory, "Unihan");
-const UnihanReadingsIndex = path.join(UnihanUnzipDirectory, "Unihan_Readings.txt");
-const distributedCodesDirectory = path.join(dataDirectory, "result");
-const JapaneseCodesEntryPoint = path.join(distributedCodesDirectory, "japanese.txt");
-const ChineseCodesEntryPoint = path.join(distributedCodesDirectory, "chinese.txt");
+export interface IDetectorConfig {
+    includeCodesForJa?: string[];
+    excludeCodesForJa?: string[];
+    includeCodesForZh?: string[];
+    excludeCodesForZh?: string[];
+}
+
+const CONFIG_INDEX = path.join(DATA_DIR, "config.json");
+const UNIHAN_ZIP = path.join(RAW_DIR, "Unihan.zip");
+const UNIHAN_UNZIP_DIR = path.join(RAW_DIR, "Unihan");
+const UNIHAN_READINGS_INDEX = path.join(UNIHAN_UNZIP_DIR, "Unihan_Readings.txt");
+const JAPANESE_CODES_ENTRY_POINT = path.join(DISTRIBUTED_CODES_DIR, "japanese.txt");
+const CHINESE_CODES_ENTRY_POINT = path.join(DISTRIBUTED_CODES_DIR, "chinese.txt");
 const NEW_LINE = "\n";
 const SPACE = "\t";
 const HASH = "#";
 
-execSync("mkdir -p " + dataDirectory);
-if (process.argv.map((e) => e.toLowerCase()).includes("-f") || !fs.existsSync(UnihanZipFileIndex)) {
-    execSync("wget " + UnihanURL + " -O " + UnihanZipFileIndex);
-}
-execSync("unzip -o Unihan.zip -d " + UnihanUnzipDirectory, { cwd: dataDirectory });
+const config = JSON.parse(fs.readFileSync(CONFIG_INDEX, "utf-8")) as IDetectorConfig;
 
-const UnihanReadings = fs.readFileSync(UnihanReadingsIndex, "utf-8");
+if (!fs.existsSync(UNIHAN_ZIP)) {
+    console.error("Unihan.zip not found. Please download it first.");
+    process.exit(1);
+}
+
+if (process.platform === "win32") {
+    execSync("tar -xf " + UNIHAN_ZIP + " -C " + UNIHAN_UNZIP_DIR, { cwd: process.cwd() });
+} else {
+    execSync("unzip -o " + UNIHAN_ZIP + " -d " + UNIHAN_UNZIP_DIR, { cwd: process.cwd() });
+}
+
+const UnihanReadings = fs.readFileSync(UNIHAN_READINGS_INDEX, "utf-8");
 
 const JapaneseKun: string[] = [];
 const JapaneseOn: string[] = [];
@@ -77,22 +89,22 @@ console.log();
 let Japanese: number[] = Array.from(new Set([...JapaneseKun, ...JapaneseOn])).map((e) => parseInt(e.slice(2), 16));
 let Chinese: number[] = Array.from(new Set([...Mandarin, ...Cantonese])).map((e) => parseInt(e.slice(2), 16));
 
-for (const str of config.includeCodesForZh) {
+for (const str of config.includeCodesForZh || []) {
     const unicode = str.codePointAt(0);
     if (unicode && !Chinese.includes(unicode)) Chinese.push(unicode);
 }
 
-for (const str of config.excludeCodesForZh) {
+for (const str of config.excludeCodesForZh || []) {
     const unicode = str.codePointAt(0);
     if (unicode) Chinese = Chinese.filter((e) => e !== unicode);
 }
 
-for (const str of config.includeCodesForJa) {
+for (const str of config.includeCodesForJa || []) {
     const unicode = str.codePointAt(0);
     if (unicode && !Japanese.includes(unicode)) Japanese.push(unicode);
 }
 
-for (const str of config.excludeCodesForJa) {
+for (const str of config.excludeCodesForJa || []) {
     const unicode = str.codePointAt(0);
     if (unicode) Japanese = Japanese.filter((e) => e !== unicode);
 }
@@ -136,10 +148,10 @@ function generateRegExpSource(arr: number[]): string {
     return buildCode(sum);
 }
 
-execSync("mkdir -p " + distributedCodesDirectory);
+execSync("mkdir -p " + DISTRIBUTED_CODES_DIR);
 
-fs.writeFileSync(JapaneseCodesEntryPoint, generateRegExpSource(Japanese));
-fs.writeFileSync(ChineseCodesEntryPoint, generateRegExpSource(Chinese));
+fs.writeFileSync(JAPANESE_CODES_ENTRY_POINT, generateRegExpSource(Japanese));
+fs.writeFileSync(CHINESE_CODES_ENTRY_POINT, generateRegExpSource(Chinese));
 
 console.log();
 console.log("Done");
