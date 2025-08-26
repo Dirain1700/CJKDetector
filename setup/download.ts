@@ -31,6 +31,7 @@ if (isZipExists && !force) {
         })
         .on("error", (err) => {
             console.error("Error checking remote Unihan.zip:", err);
+            process.exit(1);
         })
         .end();
 }
@@ -62,8 +63,10 @@ https
 
         stream.on("error", (err) => {
             console.error("Error downloading Unihan.zip:", err);
+            process.exit(1);
         });
     })
     .on("error", (err) => {
         console.error("Error while downloading:", err);
+        process.exit(1);
     });

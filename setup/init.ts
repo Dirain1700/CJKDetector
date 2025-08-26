@@ -10,6 +10,7 @@ const CONFIG_COPYING_DIR = path.join(process.cwd(), DATA_DIR);
 
 if (fs.existsSync(CONFIG_COPYING_DIR)) {
     console.error("Unihan directory already exists.");
+    process.exit(0);
 }
 
 fs.cpSync(CONFIG_EXAMPLE_DIR, CONFIG_COPYING_DIR, { recursive: true });

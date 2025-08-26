@@ -27,6 +27,7 @@ const config = JSON.parse(fs.readFileSync(CONFIG_INDEX, "utf-8")) as IDetectorCo
 
 if (!fs.existsSync(UNIHAN_ZIP)) {
     console.error("Unihan.zip not found. Please download it first.");
+    process.exit(1);
 }
 
 if (process.platform === "win32") {
