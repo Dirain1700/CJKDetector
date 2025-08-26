@@ -30,6 +30,7 @@ if (!fs.existsSync(UNIHAN_ZIP)) {
 }
 
 if (process.platform === "win32") {
+    fs.mkdirSync(UNIHAN_UNZIP_DIR, { recursive: true });
     execSync("tar -xf " + UNIHAN_ZIP + " -C " + UNIHAN_UNZIP_DIR, { cwd: process.cwd() });
 } else {
     execSync("unzip -o " + UNIHAN_ZIP + " -d " + UNIHAN_UNZIP_DIR, { cwd: process.cwd() });
