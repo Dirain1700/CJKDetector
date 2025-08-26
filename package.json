@@ -1,6 +1,6 @@
 {
     "name": "@dirain/cjkdetector",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "A package for detecting Chinese and Japanese characters",
     "main": "./dist/cjs/index.js",
     "exports": {
@@ -15,9 +15,7 @@
     ],
     "type": "commonjs",
     "bin": {
-        "init": "dist/setup/init.js",
-        "download": "dist/setup/download.js",
-        "setup": "dist/setup/setup.js"
+        "cjkdetector": "./dist/setup/cli.js"
     },
     "devDependencies": {
         "@types/lodash": "^4.17.20",

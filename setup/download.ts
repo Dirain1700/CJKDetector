@@ -30,8 +30,7 @@ if (isZipExists && !force) {
             }
         })
         .on("error", (err) => {
-            console.error("Error checking remote Unihan.zip:", err);
-            process.exit(1);
+            throw new Error("Error checking remote Unihan.zip:", err);
         })
         .end();
 }
@@ -53,7 +52,7 @@ https
                     `\rDownloading... ${progressBar} ${((downloadedSize / totalSize) * 100).toFixed(2)}%`
                 );
             } else {
-                process.stdout.write(`\rDownloading... ${downloadedSize} bytes`);
+                process.stderr.write(`\rDownloading... ${downloadedSize} bytes`);
             }
         });
 
@@ -66,6 +65,5 @@ https
         });
     })
     .on("error", (err) => {
-        console.error("Error while downloading:", err);
-        process.exit(1);
+        throw new Error("Error while downloading:", err);
     });
