@@ -97,10 +97,10 @@ jobs:
               id: check-prev
               run: |
                   PACK_NAME=$(node -p "require('./package.json').name")
-                  echo "PACK_NAME=$PACK_NAME" >> $GITHUB_ENV
+                  echo "PACK_NAME=$PACK_NAME" >> $GITHUB_OUTPUT
                   PRE_VERSION=$(npm info "$PACK_NAME@dev" version || true)
                   if [ -n "$PRE_VERSION" ]; then
-                      echo "PRE_VERSION=$PRE_VERSION" >> $GITHUB_ENV
+                      echo "PRE_VERSION=$PRE_VERSION" >> $GITHUB_OUTPUT
                   fi
 
             - name: Deprecate Previous version of the package
