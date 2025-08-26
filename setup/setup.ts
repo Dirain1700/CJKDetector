@@ -148,7 +148,7 @@ function generateRegExpSource(arr: number[]): string {
     return buildCode(sum);
 }
 
-execSync("mkdir -p " + DISTRIBUTED_CODES_DIR);
+fs.mkdirSync(DISTRIBUTED_CODES_DIR, { recursive: true });
 
 fs.writeFileSync(JAPANESE_CODES_ENTRY_POINT, generateRegExpSource(Japanese));
 fs.writeFileSync(CHINESE_CODES_ENTRY_POINT, generateRegExpSource(Chinese));
