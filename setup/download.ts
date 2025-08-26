@@ -2,12 +2,8 @@
 
 import * as fs from "node:fs";
 import * as https from "node:https";
-import * as path from "node:path";
 
-import { RAW_DIR } from "./constants";
-
-const UNIHAN_URL = "https://www.unicode.org/Public/UNIDATA/Unihan.zip";
-const ZIP_INDEX = path.join(RAW_DIR, "Unihan.zip");
+import { RAW_DIR, UNIHAN_URL, ZIP_INDEX } from "./constants";
 
 fs.mkdirSync(RAW_DIR, { recursive: true });
 

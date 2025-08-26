@@ -1,9 +1,10 @@
 "use strict";
 
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as https from "node:https";
+import * as path from "node:path";
 
-import { DATA_DIR, RAW_DIR, DISTRIBUTED_CODES_DIR } from "./constants";
+import { DATA_DIR, RAW_DIR, DISTRIBUTED_CODES_DIR, ZIP_INDEX, UNIHAN_URL } from "./constants";
 import { execSync } from "./tools";
 
 export interface IDetectorConfig {
@@ -14,7 +15,6 @@ export interface IDetectorConfig {
 }
 
 const CONFIG_INDEX = path.join(DATA_DIR, "config.json");
-const UNIHAN_ZIP = path.join(RAW_DIR, "Unihan.zip");
 const UNIHAN_UNZIP_DIR = path.join(RAW_DIR, "Unihan");
 const UNIHAN_READINGS_INDEX = path.join(UNIHAN_UNZIP_DIR, "Unihan_Readings.txt");
 const JAPANESE_CODES_ENTRY_POINT = path.join(DISTRIBUTED_CODES_DIR, "japanese.txt");
@@ -25,16 +25,16 @@ const HASH = "#";
 
 const config = JSON.parse(fs.readFileSync(CONFIG_INDEX, "utf-8")) as IDetectorConfig;
 
-if (!fs.existsSync(UNIHAN_ZIP)) {
+if (!fs.existsSync(ZIP_INDEX)) {
     console.error("Unihan.zip not found. Please download it first.");
     process.exit(1);
 }
 
 if (process.platform === "win32") {
     fs.mkdirSync(UNIHAN_UNZIP_DIR, { recursive: true });
-    execSync("tar -xf " + UNIHAN_ZIP + " -C " + UNIHAN_UNZIP_DIR, { cwd: process.cwd() });
+    execSync("tar -xf " + ZIP_INDEX + " -C " + UNIHAN_UNZIP_DIR, { cwd: process.cwd() });
 } else {
-    execSync("unzip -o " + UNIHAN_ZIP + " -d " + UNIHAN_UNZIP_DIR, { cwd: process.cwd() });
+    execSync("unzip -o " + ZIP_INDEX + " -d " + UNIHAN_UNZIP_DIR, { cwd: process.cwd() });
 }
 
 const UnihanReadings = fs.readFileSync(UNIHAN_READINGS_INDEX, "utf-8");
@@ -156,3 +156,15 @@ fs.writeFileSync(CHINESE_CODES_ENTRY_POINT, generateRegExpSource(Chinese));
 
 console.log();
 console.log("Done");
+
+const lastLocalModified = fs.statSync(ZIP_INDEX).mtime;
+https
+    .request(UNIHAN_URL, { method: "HEAD" }, (res) => {
+        const lastRemoteModifiedStr = res.headers["last-modified"];
+        if (lastRemoteModifiedStr) {
+            if (new Date(lastRemoteModifiedStr) > lastLocalModified) {
+                console.log("Remote Unihan.zip is newer. Consider updating.");
+            }
+        }
+    })
+    .end();
