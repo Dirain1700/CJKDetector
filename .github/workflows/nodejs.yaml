@@ -1,0 +1,120 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+on:
+    push:
+        branches: main
+
+    workflow_dispatch:
+
+jobs:
+    check:
+        name: Build
+
+        strategy:
+            matrix:
+                platform: [ubuntu-latest, windows-latest]
+                node-version: [24.x]
+
+        runs-on: ${{ matrix.platform }}
+
+        outputs:
+            source_any_changed: ${{ steps.changed-files.outputs.any_changed }}
+
+        steps:
+            - uses: actions/checkout@v5
+              with:
+                  fetch-depth: 0
+
+            - name: Check changed files
+              id: changed-files
+              uses: tj-actions/changed-files@v46
+              with:
+                  files: |
+                      src/**
+                      setup/**
+                      types/**
+                      package.json
+                      package-lock.json
+
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run CI
+              run: npm run ci
+
+            - name: Build
+              run: |
+                  npm run pre-build
+                  npm run esbuild
+
+            - name: Setup for tests
+              run: |
+                  node dist/setup/download -f
+                  node dist/setup/setup
+
+            - name: Run tests
+              run: npm test
+
+    publish:
+        name: Publish
+
+        needs: check
+
+        if: (success() && github.repository_owner == 'dirain1700' &&
+            needs.check.outputs.source_any_changed == 'true') ||
+            github.event_name == 'workflow_dispatch'
+
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                node-version: [24.x]
+
+        steps:
+            - uses: actions/checkout@v5
+
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  registry-url: "https://registry.npmjs.org"
+                  scope: "@dirain"
+                  always-auth: true
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Check previous dev package
+              id: check-prev
+              run: |
+                  PACK_NAME=$(node -p "require('./package.json').name")
+                  echo "PACK_NAME=$PACK_NAME" >> $GITHUB_ENV
+                  PRE_VERSION=$(npm info "$PACK_NAME@dev" version || true)
+                  if [ -n "$PRE_VERSION" ]; then
+                      echo "PRE_VERSION=$PRE_VERSION" >> $GITHUB_ENV
+                  fi
+
+            - name: Deprecate Previous version of the package
+              if: steps.check-prev.outputs.PRE_VERSION
+              run: npm deprecate ${{ steps.check-prev.outputs.PACK_NAME }}@${{ steps.check-prev.outputs.PRE_VERSION }} "This dev version has been deprecated automatically. Please use newest one."
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+                  # Ensure that the NPM_TOKEN secret is set in your repository or organization secrets.
+
+            - name: Update package version
+              run: npm version prerelease --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)" --no-git-tag-version
+
+            # Running build is not needed because this package has prepublishOnly
+            - name: Publish a package
+              run: npm publish --tag dev
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
