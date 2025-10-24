@@ -12,6 +12,7 @@
     "files": [
         "dist",
         "src",
+        "types",
         "unihan_data"
     ],
     "type": "commonjs",
