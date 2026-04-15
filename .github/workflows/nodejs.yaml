@@ -24,13 +24,13 @@ jobs:
             source_any_changed: ${{ steps.changed-files.outputs.any_changed }}
 
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
               with:
                   fetch-depth: 0
 
             - name: Check changed files
               id: changed-files
-              uses: tj-actions/changed-files@v46
+              uses: tj-actions/changed-files@v47
               with:
                   files: |
                       src/**
@@ -40,7 +40,7 @@ jobs:
                       package-lock.json
 
             - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v5
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "npm"
@@ -80,15 +80,14 @@ jobs:
                 node-version: [24.x]
 
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
 
             - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v5
               with:
                   node-version: ${{ matrix.node-version }}
                   registry-url: "https://registry.npmjs.org"
                   scope: "@dirain"
-                  always-auth: true
 
             - name: Install dependencies
               run: npm ci
