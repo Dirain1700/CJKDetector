@@ -16,5 +16,5 @@
         "incremental": false,
         "typeRoots": ["node_modules/@types", "types"]
     },
-    "include": ["build.ts", "tsc.ts"]
+    "include": ["build.ts"]
 }

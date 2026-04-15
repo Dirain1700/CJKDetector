@@ -70,7 +70,7 @@ module.exports = defineConfig([
             sourceType: "script",
 
             parserOptions: {
-                project: ["./tsconfig.cjs.json"],
+                project: ["./tsconfig.json"],
             },
         },
 
@@ -128,7 +128,7 @@ module.exports = defineConfig([
             sourceType: "script",
 
             parserOptions: {
-                project: ["./tsconfig.setup.json"],
+                project: ["./setup/tsconfig.json"],
             },
         },
     },
@@ -204,14 +204,14 @@ module.exports = defineConfig([
         },
     },
     {
-        files: ["test/**/*.ts"],
+        files: ["src/test/**/*.ts"],
 
         languageOptions: {
             ecmaVersion: 5,
             sourceType: "script",
 
             parserOptions: {
-                project: ["./tsconfig.test.json"],
+                project: ["./src/test/tsconfig.json"],
             },
         },
 
@@ -219,7 +219,7 @@ module.exports = defineConfig([
             "import/resolver": {
                 typescript: {
                     alwaysTryTypes: true,
-                    project: "./tsconfig.test.json",
+                    project: "./src/test/tsconfig.json",
                 },
 
                 alias: {

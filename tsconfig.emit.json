@@ -1,0 +1,10 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "emitDeclarationOnly": true,
+        "declaration": true,
+        "declarationMap": true
+    },
+    "include": ["src/**/*.ts", "types/**/*.ts"],
+    "exclude": ["src/type/*", "src/test/**/*.ts", "build.ts", "setup/**/*.ts"]
+}

@@ -43,7 +43,7 @@ buildSync(Object.assign(cloneDeep(config), {
     entryPoints: setupFiles,
     format: "cjs",
     outdir: path.resolve(__dirname, "./dist/setup"),
-    tsconfig: path.resolve(__dirname, "tsconfig.cjs.json"),
+    tsconfig: path.resolve(__dirname, "setup/tsconfig.json"),
 }));
 
 console.log("Transpiling to CommonJS...");
@@ -54,7 +54,7 @@ buildSync(Object.assign(cloneDeep(config), {
         entryPoints: [mainFileName, exportFileName],
         format: "cjs",
         outdir: path.resolve(__dirname, "./dist/cjs"),
-        tsconfig: path.resolve(__dirname, "tsconfig.cjs.json"),
+    tsconfig: path.resolve(__dirname, "tsconfig.json"),
     }));
 
 console.log("Transpiling to ES Module...");
@@ -66,7 +66,7 @@ buildSync(Object.assign(cloneDeep(config), {
         format: "esm",
         outExtension: { ".js": ".mjs" },
         outdir: path.resolve(__dirname, "./dist/esm"),
-        tsconfig: path.resolve(__dirname, "tsconfig.esm.json"),
+    tsconfig: path.resolve(__dirname, "tsconfig.json"),
     }));
 
 console.log("copying type definition modules...");
@@ -93,5 +93,5 @@ buildSync(Object.assign(cloneDeep(config), {
         format: "cjs",
         minify: false,
         outdir: "dist/cjs/test",
-        tsconfig: path.resolve(__dirname, "tsconfig.test.json"),
+    tsconfig: path.resolve(__dirname, "src/test/tsconfig.json"),
 }));

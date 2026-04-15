@@ -20,26 +20,26 @@
         "cjkdetector": "./dist/setup/cli.js"
     },
     "devDependencies": {
-        "@eslint/compat": "^2.0.0",
-        "@eslint/eslintrc": "^3.3.1",
-        "@eslint/js": "^9.39.1",
-        "@types/lodash": "^4.17.20",
+        "@eslint/compat": "^2.0.5",
+        "@eslint/eslintrc": "^3.3.5",
+        "@eslint/js": "9.39.4",
+        "@types/lodash": "^4.17.24",
         "@types/mocha": "^10.0.10",
-        "@types/node": "^24.10.1",
-        "@typescript-eslint/eslint-plugin": "8.47.0",
-        "@typescript-eslint/parser": "8.47.0",
-        "esbuild": "0.27.0",
+        "@types/node": "^25.6.0",
+        "@typescript-eslint/eslint-plugin": "8.58.2",
+        "@typescript-eslint/parser": "8.58.2",
+        "esbuild": "0.28.0",
         "esbuild-plugin-alias-path": "2.0.2",
-        "eslint": "9.39.1",
+        "eslint": "9.39.4",
         "eslint-import-resolver-typescript": "4.4.4",
         "eslint-plugin-import": "2.32.0",
-        "glob": "12.0.0",
-        "globals": "^16.5.0",
-        "lodash": "^4.17.21",
+        "glob": "13.0.6",
+        "globals": "^17.5.0",
+        "lodash": "^4.18.1",
         "mocha": "^11.7.5",
-        "prettier": "3.6.2",
+        "prettier": "3.8.2",
         "ts-node": "10.9.2",
-        "typescript": "5.9.3"
+        "typescript": "6.0.2"
     },
     "scripts": {
         "lint": "eslint --cache .",
@@ -48,19 +48,18 @@
         "mocha": "npm run esbuild && mocha --enable-source-maps dist/cjs/test/index.js",
         "write": "prettier --write .",
         "check": "prettier --check .",
-        "tsc": "npm run tsc:cjs && npm run tsc:esm",
-        "tsc:cjs": "tsc --p tsconfig.cjs.json --noEmit",
-        "tsc:esm": "tsc --p tsconfig.esm.json --noEmit",
-        "tsc:setup": "tsc -p tsconfig.setup.json",
-        "tsc:test": "tsc -p tsconfig.test.json",
-        "emit": "npm run emit:cjs & npm run emit:esm",
-        "emit:cjs": "tsc -p tsconfig.cjs.json",
-        "emit:esm": "tsc -p tsconfig.esm.json",
+        "tsc": "npm run tsc:main && npm run tsc:setup && npm run tsc:test",
+        "tsc:main": "tsc -p tsconfig.json --noEmit",
+        "tsc:setup": "tsc -p setup/tsconfig.json --noEmit",
+        "tsc:test": "tsc -p src/test/tsconfig.json --noEmit",
+        "emit": "npm run emit:cjs && npm run emit:esm",
+        "emit:cjs": "tsc -p tsconfig.emit.json --emitDeclarationOnly --outDir dist/cjs --module commonjs",
+        "emit:esm": "tsc -p tsconfig.emit.json --emitDeclarationOnly --outDir dist/esm --module esnext",
         "ci": "npm run check && npm run lint && npm run tsc",
         "build": "npm run write && npm run esbuild && npm run emit && npm run lint",
         "pre-build": "tsc -p tsconfig.build.json",
         "setup": "node --enable-source-maps dist/setup/setup.js",
-        "esbuild": "node --enable-source-maps build.js",
+        "esbuild": "npm run pre-build && node --enable-source-maps build.js",
         "prepublishOnly": "npm run check && npm run pre-build && npm run build",
         "ncu": "npx -p npm-check-updates  -c \"ncu -u\""
     },
@@ -69,5 +68,9 @@
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Dirain1700/cjkdetector.git"
+    },
+    "overrides": {
+        "diff": "9.0.0",
+        "serialize-javascript": "7.0.5"
     }
 }

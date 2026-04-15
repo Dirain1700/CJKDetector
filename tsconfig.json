@@ -4,7 +4,7 @@
 
         // emit settings
         "target": "esnext",
-        "rootDir": "./src",
+        "rootDir": "./",
         "declaration": true,
         "declarationMap": true,
         "sourceMap": true,
@@ -20,8 +20,9 @@
         "noUncheckedIndexedAccess": true,
         "strictBindCallApply": true,
         "noPropertyAccessFromIndexSignature": false,
+        "types": ["node"],
         "typeRoots": ["node_modules/@types", "types"]
     },
-    "include": ["src/**/*.ts", "types/**/*.ts"],
-    "exclude": ["src/type/*"]
+    "include": ["build.ts", "src/**/*.ts", "types/**/*.ts"],
+    "exclude": ["src/type/*", "src/test/**/*.ts"]
 }

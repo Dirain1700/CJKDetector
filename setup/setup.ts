@@ -158,13 +158,34 @@ console.log();
 console.log("Done");
 
 const lastLocalModified = fs.statSync(ZIP_INDEX).mtime;
-https
-    .request(UNIHAN_URL, { method: "HEAD" }, (res) => {
+const req = https.request(
+    UNIHAN_URL,
+    {
+        method: "HEAD",
+        // Avoid keeping sockets in the global agent pool
+        agent: false,
+        headers: {
+            Connection: "close",
+        },
+    },
+    (res) => {
         const lastRemoteModifiedStr = res.headers["last-modified"];
-        if (lastRemoteModifiedStr) {
-            if (new Date(lastRemoteModifiedStr) > lastLocalModified) {
-                console.log("Remote Unihan.zip is newer. Consider updating.");
-            }
+        if (lastRemoteModifiedStr && new Date(lastRemoteModifiedStr) > lastLocalModified) {
+            console.log("Remote Unihan.zip is newer. Consider updating.");
         }
-    })
-    .end();
+
+        // Ensure the response stream is fully consumed so the socket can close
+        res.resume();
+    }
+);
+
+req.setTimeout(10_000, () => {
+    req.destroy(new Error("Timeout while checking remote Unihan.zip"));
+});
+
+req.on("error", (err) => {
+    // Non-fatal: the zip generation already completed.
+    console.warn("Failed to check remote Unihan.zip:", err.message);
+});
+
+req.end();
